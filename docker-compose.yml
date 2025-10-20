@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=postgresql://textil_user:textil_password@db:5432/textil_kompleks
+      - DIRECT_URL=postgresql://textil_user:textil_password@db:5432/textil_kompleks
+      - NEXTAUTH_SECRET=your-nextauth-secret-min-32-characters
+      - NEXTAUTH_URL=http://localhost:3000
+      - JWT_SECRET=your-jwt-secret-min-32-characters
+      - JWT_REFRESH_SECRET=your-jwt-refresh-secret-min-32-characters
+      - SMTP_HOST=smtp.gmail.com
+      - SMTP_PORT=587
+      - SMTP_USER=your-email@gmail.com
+      - SMTP_PASSWORD=your-app-password
+      - FROM_EMAIL=noreply@textil-kompleks.ru
+      - UPLOAD_DIR=./public/uploads
+      - MAX_FILE_SIZE=5242880
+      - SITE_URL=http://localhost:3000
+      - SITE_NAME=Текстиль Комплекс
+      - ADMIN_EMAIL=admin@textil-kompleks.ru
+      - ADMIN_PASSWORD=admin123
+    depends_on:
+      - db
+    volumes:
+      - uploads:/app/public/uploads
+
+  db:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_DB=textil_kompleks
+      - POSTGRES_USER=textil_user
+      - POSTGRES_PASSWORD=textil_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./ssl:/etc/nginx/ssl
+      - uploads:/var/www/uploads
+    depends_on:
+      - app
+
+volumes:
+  postgres_data:
+  uploads:
+
+
