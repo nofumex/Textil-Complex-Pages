@@ -55,14 +55,17 @@ async function testAPIWithAuth() {
       } else {
         console.log(`   ❌ Ошибка: ${result.error}`);
       }
-    } catch (error) {
-      console.log(`   ❌ Ошибка запроса: ${error.message}`);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.log(`   ❌ Ошибка запроса: ${error.message}`);
+      } else {
+        console.log(`   ❌ Неизвестная ошибка: ${error}`);
+      }
     }
 
     // Тест 2: Получение товара с вариациями
     console.log('\n🎨 Тест 2: Получение товара с вариациями...');
     try {
-      // Находим товар с вариациями
       const productWithVariants = await prisma.product.findFirst({
         where: {
           variants: {
@@ -92,8 +95,12 @@ async function testAPIWithAuth() {
       } else {
         console.log('   ⚠️ Товары с вариациями не найдены');
       }
-    } catch (error) {
-      console.log(`   ❌ Ошибка запроса: ${error.message}`);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.log(`   ❌ Ошибка запроса: ${error.message}`);
+      } else {
+        console.log(`   ❌ Неизвестная ошибка: ${error}`);
+      }
     }
 
     // Тест 3: Создание новой вариации
@@ -130,7 +137,6 @@ async function testAPIWithAuth() {
           console.log(`   💰 Цена: ${newVariant.price} ₽`);
           console.log(`   📦 Остаток: ${newVariant.stock} шт.`);
           
-          // Удаляем тестовую вариацию
           await prisma.productVariant.delete({
             where: { id: result.data.id },
           });
@@ -141,8 +147,12 @@ async function testAPIWithAuth() {
       } else {
         console.log('   ⚠️ Товары с вариациями не найдены');
       }
-    } catch (error) {
-      console.log(`   ❌ Ошибка запроса: ${error.message}`);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.log(`   ❌ Ошибка запроса: ${error.message}`);
+      } else {
+        console.log(`   ❌ Неизвестная ошибка: ${error}`);
+      }
     }
 
     // Тест 4: Получение публичного API товара
@@ -173,8 +183,12 @@ async function testAPIWithAuth() {
       } else {
         console.log('   ⚠️ Активные товары с вариациями не найдены');
       }
-    } catch (error) {
-      console.log(`   ❌ Ошибка запроса: ${error.message}`);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.log(`   ❌ Ошибка запроса: ${error.message}`);
+      } else {
+        console.log(`   ❌ Неизвестная ошибка: ${error}`);
+      }
     }
 
     console.log('\n✅ Тестирование API завершено!');
@@ -184,8 +198,12 @@ async function testAPIWithAuth() {
     console.log('   • CRUD операции с вариациями доступны');
     console.log('   • Публичный API возвращает вариации');
 
-  } catch (error) {
-    console.error('❌ Ошибка при тестировании API:', error);
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      console.error('❌ Ошибка при тестировании API:', error.message);
+    } else {
+      console.error('❌ Неизвестная ошибка при тестировании API:', error);
+    }
   } finally {
     await prisma.$disconnect();
   }
