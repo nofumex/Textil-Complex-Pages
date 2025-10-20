@@ -71,9 +71,11 @@ async function checkImportedData() {
     if (fs.existsSync(uploadsPath)) {
       const files = fs.readdirSync(uploadsPath);
       console.log(`\n🖼️ Изображения в папке uploads (${files.length}):`);
-      files.slice(0, 10).forEach(file => {
-        console.log(`  - ${file}`);
-      });
+      // @ts-ignore
+files.slice(0, 10).forEach(file => {
+  console.log(`  - ${file}`);
+});
+
       if (files.length > 10) {
         console.log(`  ... и еще ${files.length - 10} файлов`);
       }
